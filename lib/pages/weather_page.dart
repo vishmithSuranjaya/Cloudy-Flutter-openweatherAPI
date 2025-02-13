@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:cloudy/models/weather_model.dart';
 import 'package:cloudy/services/weather_service.dart';
+import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
 class WeatherPage extends StatefulWidget {
@@ -10,35 +10,32 @@ class WeatherPage extends StatefulWidget {
   State<WeatherPage> createState() => _WeatherPageState();
 }
 
-class _WeatherPageState extends State<WeatherPage>{
-  
-  //api key
-  final _weatherService = WeatherService('1d66d946925b3295e961d9d215d1625e');
+class _WeatherPageState extends State<WeatherPage> {
+  // API service
+  final _weatherService = WeatherService('1d66d946925b3295e961d9d215d1625e');  
   Weather? _weather;
+  final TextEditingController _controller = TextEditingController();
+  String _searchText = "";
 
-  //fetch weather
-  _fetchWeather() async {
-    //get the current city
-    String cityName = await _weatherService.getCurrentCity();
-  
-    //get weather for the city
-    try{
+  // Fetch weather
+  _fetchWeather([String? cityName]) async {
+    try {
+      // If no cityName is provided, use current location
+      cityName ??= await _weatherService.getCurrentCity();
       final weather = await _weatherService.getWeather(cityName);
       setState(() {
         _weather = weather;
       });
-    }
-
-    //any errors
-    catch(e){
+    } catch (e) {
       print(e);
     }
   }
 
-  String getWeatherAnimation(String? mainCondition){
-    if (mainCondition == null) return 'assets/Sunny.json'; //default condition to sunny
+  // Get animation based on weather
+  String getWeatherAnimation(String? mainCondition) {
+    if (mainCondition == null) return 'assets/Sunny.json'; // Default to sunny
 
-    switch(mainCondition.toLowerCase()){
+    switch (mainCondition.toLowerCase()) {
       case 'clouds':
       case 'mist':
       case 'smoke':
@@ -51,7 +48,7 @@ class _WeatherPageState extends State<WeatherPage>{
       case 'shower rain':
         return 'assets/Raining.json';
       case 'thunderstorm':
-        //return assets/Thunder.json;
+        return 'assets/Thunder.json';
       case 'clear':
         return 'assets/Sunny.json';
       default:
@@ -59,14 +56,49 @@ class _WeatherPageState extends State<WeatherPage>{
     }
   }
 
-  //weather animations
+  // Get clothing suggestions
+  List<String> getWeatherClothes(String? mainCondition) {
+    List<String> cloudClothes = [
+      'Light jacket', 'Hoodie', 'T-shirt', 'Jeans', 'Sneakers',
+      'Water-resistant jacket', 'Sweater', 'Long pants', 'Scarf',
+      'Long-sleeve shirt', 'Mask (N95)', 'Sunglasses', 'Boots'
+    ];
 
-  //init state
+    List<String> rainyClothes = [
+      'Raincoat', 'Umbrella', 'Waterproof jacket', 'Boots', 
+      'Water-resistant pants', 'Hat', 'Quick-dry clothing'
+    ];
+
+    List<String> sunnyClothes = [
+      'T-shirt', 'Shorts', 'Sunglasses', 'Sandals', 
+      'Hat', 'Light jacket', 'Umbrella', 'Swimsuit'
+    ];
+
+    switch (mainCondition?.toLowerCase()) {
+      case 'clouds':
+      case 'mist':
+      case 'smoke':
+      case 'haze':
+      case 'dust':
+      case 'fog':
+        return cloudClothes;
+      case 'rain':
+      case 'drizzle':
+      case 'shower rain':
+        return rainyClothes;
+      case 'thunderstorm':
+        return rainyClothes; // Thunderstorms often need similar clothing
+      case 'clear':
+        return sunnyClothes;
+      default:
+        return sunnyClothes;
+    }
+  }
+
+  // Initialize state
   @override
   void initState() {
     super.initState();
-
-    //fetch weather on startup
     _fetchWeather();
   }
 
@@ -74,33 +106,95 @@ class _WeatherPageState extends State<WeatherPage>{
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[800],
+      resizeToAvoidBottomInset: true,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(_weather?.cityName ?? "loading city..",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 50, 
-            fontWeight: FontWeight.bold)), //city name
+          children: [
+            // City Name
+            Text(
+              _weather?.cityName ?? "Loading city...",
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
 
-          Lottie.asset(getWeatherAnimation(_weather?.mainCondition)),
+            // Weather Animation
+            Lottie.asset(getWeatherAnimation(_weather?.mainCondition)),
 
-          Text(_weather?.mainCondition ?? "Weather Condition..",
-          style: TextStyle(color: Colors.amber,
-          fontSize: 50, 
-          fontWeight: FontWeight.bold)),
+            // Weather Condition
+            Text(
+              _weather?.mainCondition ?? "Loading",
+              style: const TextStyle(
+                color: Colors.amber,
+                fontSize: 50,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
 
-          Text('${_weather?.temperature.round()}°C',
-           style: TextStyle(
-            color: Colors.white,
-            fontSize: 50, 
-            fontWeight: FontWeight.bold),
-          ),
-          
-         
-        ],
-      ),
+            // Temperature
+            Text(
+              '${_weather?.temperature.round() ?? '...'}°C',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 50,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            // Search Field
+            // Padding(
+            //   padding: const EdgeInsets.all(4.0),
+            //   child: TextField(
+            //     controller: _controller,
+            //     onChanged: (text) {
+            //       setState(() {
+            //         _searchText = text;
+            //       });
+            //     },
+            //     onSubmitted: (text) {
+            //       if (text.isNotEmpty) {
+            //         _fetchWeather(text);
+            //       }
+            //     },
+            //     decoration: InputDecoration(
+            //       labelText: 'Search City',
+            //       prefixIcon: const Icon(Icons.search),
+            //       border: OutlineInputBorder(
+            //         borderRadius: BorderRadius.circular(8.0),
+            //       ),
+            //     ),
+            //   ),
+            // ),
+
+            // Clothing Suggestions
+            if (_weather != null)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    const Text(
+                      "Suggested Clothing:",
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      spacing: 8.0,
+                      children: getWeatherClothes(_weather?.mainCondition)
+                          .map((clothing) => Chip(
+                                label: Text(clothing),
+                                backgroundColor: Colors.blueGrey[700],
+                                labelStyle: const TextStyle(color: Colors.white),
+                              ))
+                          .toList(),
+                    ),
+                  ],
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
