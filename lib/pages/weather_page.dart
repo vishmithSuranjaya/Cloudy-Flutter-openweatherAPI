@@ -12,7 +12,7 @@ class WeatherPage extends StatefulWidget {
 
 class _WeatherPageState extends State<WeatherPage> {
   // API service
-  final _weatherService = WeatherService('1d66d946925b3295e961d9d215d1625e');  
+  final _weatherService = WeatherService('1d66d946925b3295e961d9d215d1625e');
   Weather? _weather;
   final TextEditingController _controller = TextEditingController();
   String _searchText = "";
@@ -59,19 +59,33 @@ class _WeatherPageState extends State<WeatherPage> {
   // Get clothing suggestions
   List<String> getWeatherClothes(String? mainCondition) {
     List<String> cloudClothes = [
-      'Light jacket', 'Hoodie', 'T-shirt', 'Jeans', 'Sneakers',
-      'Water-resistant jacket', 'Sweater', 'Long pants', 'Scarf',
-      'Long-sleeve shirt', 'Mask (N95)', 'Sunglasses', 'Boots'
-    ];
+      'assets/cloud_clothes/hoddie.png',
+      'assets/cloud_clothes/light_jacket.png',
+      'assets/cloud_clothes/jeans.png',
+      'assets/cloud_clothes/boots.png',
+      'assets/cloud_clothes/umbrella.png',
+      'assets/cloud_clothes/frock.png'
+      ];
 
     List<String> rainyClothes = [
-      'Raincoat', 'Umbrella', 'Waterproof jacket', 'Boots', 
-      'Water-resistant pants', 'Hat', 'Quick-dry clothing'
+      'Raincoat',
+      'Umbrella',
+      'Waterproof jacket',
+      'Boots',
+      'Water-resistant pants',
+      'Hat',
+      'Quick-dry clothing'
     ];
 
     List<String> sunnyClothes = [
-      'T-shirt', 'Shorts', 'Sunglasses', 'Sandals', 
-      'Hat', 'Light jacket', 'Umbrella', 'Swimsuit'
+      'T-shirt',
+      'Shorts',
+      'Sunglasses',
+      'Sandals',
+      'Hat',
+      'Light jacket',
+      'Umbrella',
+      'Swimsuit'
     ];
 
     switch (mainCondition?.toLowerCase()) {
@@ -180,16 +194,21 @@ class _WeatherPageState extends State<WeatherPage> {
                       style: TextStyle(color: Colors.white, fontSize: 20),
                     ),
                     Wrap(
-                      alignment: WrapAlignment.center,
-                      spacing: 8.0,
-                      children: getWeatherClothes(_weather?.mainCondition)
-                          .map((clothing) => Chip(
-                                label: Text(clothing),
-                                backgroundColor: Colors.blueGrey[700],
-                                labelStyle: const TextStyle(color: Colors.white),
-                              ))
-                          .toList(),
-                    ),
+  alignment: WrapAlignment.center,
+  spacing: 8.0,
+  children: getWeatherClothes(_weather?.mainCondition).map((imagePath) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 10.0),  // Add padding on top
+      child: Image.asset(
+        imagePath,
+        width: 50,  // Set width of the image
+        height: 50, // Set height of the image
+        fit: BoxFit.cover,  // Maintain aspect ratio
+      ),
+    );
+  }).toList(),
+)
+
                   ],
                 ),
               ),
