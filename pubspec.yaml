@@ -25,3 +25,5 @@ flutter:
   assets:
     - assets/
     - assets/cloud_clothes/
+    - assets/rain_clothes/
+    - assets/sunny_clothes/

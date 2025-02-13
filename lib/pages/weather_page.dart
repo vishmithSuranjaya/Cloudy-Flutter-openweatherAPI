@@ -1,3 +1,4 @@
+import 'package:cloudy/pages/search_bar.dart';
 import 'package:cloudy/models/weather_model.dart';
 import 'package:cloudy/services/weather_service.dart';
 import 'package:flutter/material.dart';
@@ -65,27 +66,23 @@ class _WeatherPageState extends State<WeatherPage> {
       'assets/cloud_clothes/boots.png',
       'assets/cloud_clothes/umbrella.png',
       'assets/cloud_clothes/frock.png'
-      ];
+    ];
 
     List<String> rainyClothes = [
-      'Raincoat',
-      'Umbrella',
-      'Waterproof jacket',
-      'Boots',
-      'Water-resistant pants',
-      'Hat',
-      'Quick-dry clothing'
+      'assets/rain_clothes/raincoat.png',
+      'assets/rain_clothes/umbrella.png',
+      'assets/rain_clothes/Water-resistant pants.png',
+      'assets/rain_clothes/hoddie.png',
+      'assets/rain_clothes/waterproof_jacket.png',
+      'assets/rain_clothes/boots.png',
     ];
 
     List<String> sunnyClothes = [
-      'T-shirt',
-      'Shorts',
-      'Sunglasses',
-      'Sandals',
-      'Hat',
-      'Light jacket',
-      'Umbrella',
-      'Swimsuit'
+      'assets/sunny_clothes/cap.png',
+      'assets/sunny_clothes/shorts.png',
+      'assets/sunny_clothes/slippers.png',
+      'assets/sunny_clothes/sunglasses.png',
+      'assets/sunny_clothes/tshirt.png',
     ];
 
     switch (mainCondition?.toLowerCase()) {
@@ -119,100 +116,112 @@ class _WeatherPageState extends State<WeatherPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[800],
       resizeToAvoidBottomInset: true,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // City Name
-            Text(
-              _weather?.cityName ?? "Loading city...",
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-
-            // Weather Animation
-            Lottie.asset(getWeatherAnimation(_weather?.mainCondition)),
-
-            // Weather Condition
-            Text(
-              _weather?.mainCondition ?? "Loading",
-              style: const TextStyle(
-                color: Colors.amber,
-                fontSize: 50,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-
-            // Temperature
-            Text(
-              '${_weather?.temperature.round() ?? '...'}°C',
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 50,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-
-            // Search Field
-            // Padding(
-            //   padding: const EdgeInsets.all(4.0),
-            //   child: TextField(
-            //     controller: _controller,
-            //     onChanged: (text) {
-            //       setState(() {
-            //         _searchText = text;
-            //       });
-            //     },
-            //     onSubmitted: (text) {
-            //       if (text.isNotEmpty) {
-            //         _fetchWeather(text);
-            //       }
-            //     },
-            //     decoration: InputDecoration(
-            //       labelText: 'Search City',
-            //       prefixIcon: const Icon(Icons.search),
-            //       border: OutlineInputBorder(
-            //         borderRadius: BorderRadius.circular(8.0),
-            //       ),
-            //     ),
-            //   ),
-            // ),
-
-            // Clothing Suggestions
-            if (_weather != null)
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    const Text(
-                      "Suggested Clothing:",
-                      style: TextStyle(color: Colors.white, fontSize: 20),
-                    ),
-                    Wrap(
-  alignment: WrapAlignment.center,
-  spacing: 8.0,
-  children: getWeatherClothes(_weather?.mainCondition).map((imagePath) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 10.0),  // Add padding on top
-      child: Image.asset(
-        imagePath,
-        width: 50,  // Set width of the image
-        height: 50, // Set height of the image
-        fit: BoxFit.cover,  // Maintain aspect ratio
-      ),
-    );
-  }).toList(),
-)
-
-                  ],
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color(0xff8E5E8A), // Lighter metallic purple
+              Color(0xff5842A9), // Original metallic purple
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            stops: [0.0, 1.0],
+          ),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // City Name
+              Text(
+                _weather?.cityName ?? "Loading city...",
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-          ],
+
+              // Weather Animation
+              Lottie.asset(getWeatherAnimation(_weather?.mainCondition)),
+
+              // Weather Condition
+              Text(
+                _weather?.mainCondition ?? "Loading",
+                style: const TextStyle(
+                  color: Colors.amber,
+                  fontSize: 50,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              // Temperature
+              Text(
+                '${_weather?.temperature.round() ?? '...'}°C',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 50,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              // Clothing Suggestions
+              if (_weather != null)
+                Padding(
+                  padding:
+                  const EdgeInsets.only(top: 20.0),
+                  child: Column(
+                    children: [
+                      const Text(
+                        "Suggested Clothing:",
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      ),
+                      Wrap(
+                        alignment: WrapAlignment.center,
+                        spacing: 8.0,
+                        children: getWeatherClothes(_weather?.mainCondition)
+                            .map((imagePath) {
+                          return Padding(
+                            padding: const EdgeInsets.only(
+                                top: 10.0), // Add padding on top
+                            child: Image.asset(
+                              imagePath,
+                              width: 50, // Set width of the image
+                              height: 50, // Set height of the image
+                              fit: BoxFit.cover, // Maintain aspect ratio
+                            ),
+                          );
+                        }).toList(),
+                      ),
+
+
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(top: 20.0), // Add top margin
+                        child: ElevatedButton(
+                          child: const Text(
+                            'Search more locations..',
+                            style: TextStyle(
+                                fontSize: 18), // Add your desired style here
+                          ),
+                          
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const SearchBarWidget()),
+                            );
+                          },
+                        ),
+                      )
+
+
+                    ],
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );
