@@ -205,7 +205,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
                               Text(
                                 _weather!.mainCondition,
                                 style: const TextStyle(
-                                    color: Colors.amber,
+                                    color: Color.fromARGB(255, 41, 172, 233),
                                     fontSize: 22,
                                     fontWeight: FontWeight.bold),
                               ),
