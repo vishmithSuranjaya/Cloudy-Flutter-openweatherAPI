@@ -16,7 +16,7 @@ class _WeatherPageState extends State<WeatherPage> {
   final _weatherService = WeatherService('1d66d946925b3295e961d9d215d1625e');
   Weather? _weather;
   final TextEditingController _controller = TextEditingController();
-  String _searchText = "";
+  final String _searchText = "";
 
   // Fetch weather
   _fetchWeather([String? cityName]) async {
@@ -121,8 +121,10 @@ class _WeatherPageState extends State<WeatherPage> {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Color(0xff8E5E8A), // Lighter metallic purple
-              Color(0xff5842A9), // Original metallic purple
+              //Color(0xff8E5E8A), // Lighter metallic purple
+              Color(0xff87CEEB),
+             // Color(0xff5842A9), // Original metallic purple
+             Color(0xffDDE6F1)
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -150,7 +152,7 @@ class _WeatherPageState extends State<WeatherPage> {
               Text(
                 _weather?.mainCondition ?? "Loading",
                 style: const TextStyle(
-                  color: Colors.amber,
+                  color: Color.fromARGB(255, 41, 172, 233),
                   fontSize: 50,
                   fontWeight: FontWeight.bold,
                 ),

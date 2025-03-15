@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloudy/models/weather_model.dart';
 import 'package:cloudy/services/weather_service.dart';
+import 'package:lottie/lottie.dart';
 
 void main() => runApp(const MaterialApp(home: SearchBarWidget()));
 
@@ -38,9 +39,83 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
     }
   }
 
+  // Get animation based on weather
+  String getWeatherAnimation(String? mainCondition) {
+    if (mainCondition == null) return 'assets/Sunny.json'; // Default to sunny
+
+    switch (mainCondition.toLowerCase()) {
+      case 'clouds':
+      case 'mist':
+      case 'smoke':
+      case 'haze':
+      case 'dust':
+      case 'fog':
+        return 'assets/Cloud.json';
+      case 'rain':
+      case 'drizzle':
+      case 'shower rain':
+        return 'assets/Raining.json';
+      case 'thunderstorm':
+        return 'assets/Thunder.json';
+      case 'clear':
+        return 'assets/Sunny.json';
+      default:
+        return 'assets/Sunny.json';
+    }
+  }
+
+  // Get clothing suggestions
+  List<String> getWeatherClothes(String? mainCondition) {
+    List<String> cloudClothes = [
+      'assets/cloud_clothes/hoddie.png',
+      'assets/cloud_clothes/light_jacket.png',
+      'assets/cloud_clothes/jeans.png',
+      'assets/cloud_clothes/boots.png',
+      'assets/cloud_clothes/umbrella.png',
+      'assets/cloud_clothes/frock.png'
+    ];
+
+    List<String> rainyClothes = [
+      'assets/rain_clothes/raincoat.png',
+      'assets/rain_clothes/umbrella.png',
+      'assets/rain_clothes/Water-resistant pants.png',
+      'assets/rain_clothes/hoddie.png',
+      'assets/rain_clothes/waterproof_jacket.png',
+      'assets/rain_clothes/boots.png',
+    ];
+
+    List<String> sunnyClothes = [
+      'assets/sunny_clothes/cap.png',
+      'assets/sunny_clothes/shorts.png',
+      'assets/sunny_clothes/slippers.png',
+      'assets/sunny_clothes/sunglasses.png',
+      'assets/sunny_clothes/tshirt.png',
+    ];
+
+    switch (mainCondition?.toLowerCase()) {
+      case 'clouds':
+      case 'mist':
+      case 'smoke':
+      case 'haze':
+      case 'dust':
+      case 'fog':
+        return cloudClothes;
+      case 'rain':
+      case 'drizzle':
+      case 'shower rain':
+      case 'thunderstorm':
+        return rainyClothes;
+      case 'clear':
+        return sunnyClothes;
+      default:
+        return sunnyClothes;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false, // Prevent shifting UI when keyboard appears
       appBar: AppBar(
         title: const Text(
           'Cloudy..',
@@ -51,45 +126,49 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
       ),
       extendBodyBehindAppBar: true,
       body: Container(
+        width: double.infinity,
+        height: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Color(0xff8E5E8A),
-              Color(0xff5842A9),
+              //Color(0xff8E5E8A),
+              Color(0xff87CEEB),
+              //Color(0xff5842A9),
+              Color(0xffDDE6F1)
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
         ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 100),
-
               // Search Bar
-              TextField(
-                controller: _controller,
-                decoration: InputDecoration(
-                  hintText: 'Search city...',
-                  filled: true,
-                  fillColor: Colors.white.withOpacity(0.2),
-                  prefixIcon: const Icon(Icons.search, color: Colors.white),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    borderSide: BorderSide.none,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: TextField(
+                  controller: _controller,
+                  decoration: InputDecoration(
+                    hintText: 'Search city...',
+                    filled: true,
+                    fillColor: Colors.white.withOpacity(0.2),
+                    prefixIcon: const Icon(Icons.search, color: Colors.white),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide.none,
+                    ),
                   ),
+                  style: const TextStyle(color: Colors.white),
+                  onSubmitted: (value) {
+                    _getWeather(value);
+                  },
                 ),
-                style: const TextStyle(color: Colors.white),
-                onSubmitted: (value) {
-                  _getWeather(value); // Fetch weather when user presses enter
-                },
               ),
 
               const SizedBox(height: 20),
 
-              // Display Error Message (if any)
+              // Error message
               if (_errorMessage != null)
                 Center(
                   child: Text(
@@ -98,40 +177,77 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
                   ),
                 ),
 
-              // Display Weather Info
-              if (_weather != null) ...[
-                const SizedBox(height: 20),
-                Center(
-                  child: Column(
-                    children: [
-                      Text(
-                        _weather!.cityName,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
+              const SizedBox(height: 10),
+
+              // Weather Display and Suggestions
+              Expanded(
+                child: Center(
+                  child: _weather == null
+                      ? const Text(
+                          "Search for a city to view weather",
+                          style: TextStyle(color: Colors.white70, fontSize: 18),
+                        )
+                      : SingleChildScrollView( // To avoid overflow when showing images
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                _weather!.cityName,
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              Lottie.asset(
+                                getWeatherAnimation(_weather?.mainCondition),
+                                height: 200,
+                              ),
+                              Text(
+                                _weather!.mainCondition,
+                                style: const TextStyle(
+                                    color: Colors.amber,
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                "${_weather!.temperature.round()}°C",
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 50,
+                                    fontWeight: FontWeight.bold),
+                              ),
+
+                              const SizedBox(height: 20),
+
+                              // Clothing Suggestions
+                              const Text(
+                                "Suggested Clothing:",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 20),
+                              ),
+                              const SizedBox(height: 10),
+                              Wrap(
+                                alignment: WrapAlignment.center,
+                                spacing: 8.0,
+                                children: getWeatherClothes(
+                                        _weather?.mainCondition)
+                                    .map((imagePath) => Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 10.0),
+                                          child: Image.asset(
+                                            imagePath,
+                                            width: 50,
+                                            height: 50,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ))
+                                    .toList(),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      Text(
-                        "${_weather!.temperature.round()}°C",
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 50,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        _weather!.mainCondition,
-                        style: const TextStyle(
-                          color: Colors.amber,
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
                 ),
-              ],
+              ),
             ],
           ),
         ),
