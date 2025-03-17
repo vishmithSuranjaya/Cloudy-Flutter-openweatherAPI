@@ -112,10 +112,37 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
     }
   }
 
+  // Get background gradient based on weather condition
+  List<Color> getBackgroundGradient(String? mainCondition) {
+    if (mainCondition == null) return [Colors.blue, Colors.lightBlue];
+
+    switch (mainCondition.toLowerCase()) {
+      case 'clouds':
+      case 'mist':
+      case 'smoke':
+      case 'haze':
+      case 'dust':
+      case 'fog':
+        return [Colors.grey, Colors.white];
+      case 'rain':
+      case 'drizzle':
+      case 'shower rain':
+        return [Colors.blueGrey, Colors.lightBlue];
+      case 'thunderstorm':
+        return [Colors.black, Colors.grey];
+      case 'clear':
+        return [Colors.orange, Colors.yellow];
+      default:
+        return [Colors.blue, Colors.lightBlue];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final gradientColors = getBackgroundGradient(_weather?.mainCondition);
+
     return Scaffold(
-      resizeToAvoidBottomInset: false, // Prevent shifting UI when keyboard appears
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text(
           'Cloudy..',
@@ -128,14 +155,9 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              //Color(0xff8E5E8A),
-              Color(0xff87CEEB),
-              //Color(0xff5842A9),
-              Color(0xffDDE6F1)
-            ],
+            colors: gradientColors,
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -187,7 +209,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
                           "Search for a city to view weather",
                           style: TextStyle(color: Colors.white70, fontSize: 18),
                         )
-                      : SingleChildScrollView( // To avoid overflow when showing images
+                      : SingleChildScrollView(
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -219,6 +241,31 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
 
                               const SizedBox(height: 20),
 
+                              // Additional Weather Details
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  WeatherDetailCard(
+                                    icon: Icons.air,
+                                    value: "${_weather!.windSpeed} km/h",
+                                    label: "Wind",
+                                  ),
+                                  WeatherDetailCard(
+                                    icon: Icons.water_drop,
+                                    value: "${_weather!.humidity}%",
+                                    label: "Humidity",
+                                  ),
+                                  WeatherDetailCard(
+                                    icon: Icons.speed,
+                                    value: "${_weather!.pressure} hPa",
+                                    label: "Pressure",
+                                  ),
+                                ],
+                              ),
+
+                              const SizedBox(height: 20),
+
                               // Clothing Suggestions
                               const Text(
                                 "Suggested Clothing:",
@@ -229,19 +276,19 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
                               Wrap(
                                 alignment: WrapAlignment.center,
                                 spacing: 8.0,
-                                children: getWeatherClothes(
-                                        _weather?.mainCondition)
-                                    .map((imagePath) => Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 10.0),
-                                          child: Image.asset(
-                                            imagePath,
-                                            width: 50,
-                                            height: 50,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ))
-                                    .toList(),
+                                children:
+                                    getWeatherClothes(_weather?.mainCondition)
+                                        .map((imagePath) => Padding(
+                                              padding: const EdgeInsets.only(
+                                                  top: 10.0),
+                                              child: Image.asset(
+                                                imagePath,
+                                                width: 50,
+                                                height: 50,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ))
+                                        .toList(),
                               ),
                             ],
                           ),
@@ -250,6 +297,36 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class WeatherDetailCard extends StatelessWidget {
+  final IconData icon;
+  final String value;
+  final String label;
+
+  const WeatherDetailCard({
+    super.key,
+    required this.icon,
+    required this.value,
+    required this.label,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: Colors.white.withOpacity(0.2),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Icon(icon, color: Colors.white),
+            Text(value, style: const TextStyle(color: Colors.white)),
+            Text(label, style: const TextStyle(color: Colors.white)),
+          ],
         ),
       ),
     );
