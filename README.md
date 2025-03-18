@@ -9,7 +9,7 @@
 Cloudify is a modern and user-friendly mobile application designed to provide real-time weather
 information along with practical clothing suggestions based on the current weather conditions.
 Built using Flutter, a powerful framework for cross-platform mobile development, Cloudify offers
-a seamless experience for users on both Android and iOS platforms.
+a seamless experience for users.
 
 The app leverages an external weather API (e.g., OpenWeatherMap) to fetch accurate and up-to-
 date weather data, including temperature, weather conditions, and city names. One of the standout
@@ -21,23 +21,32 @@ that change according to the weather conditions. For example, a sunny day displa
 background with a sun animation, while a rainy day shows a dark, moody background with rain
 animations. These visual elements make the app engaging and visually appealing
 
+
+
+#  :globe_with_meridians: Tech Stack
+
+
+-  :snowflake: Flutter
+-  :link: OpenWeatherMap API
+-  :crown: Lottie
+
 # :football: Objectives
 The primary objectives of the Cloudify project are:
 
-- :white_check_mark: Provide Real-Time Weather Data:-
+- :white_check_mark: ***Provide Real-Time Weather Data***:-
  Fetch and display accurate weather information, including temperature, weather
 conditions, and city name.
  Ensure the app updates weather data in real-time.
 
- - :white_check_mark: Clothing Suggestions:
+ - :white_check_mark: ***Clothing Suggestions***:
  Offer users practical clothing recommendations based on the current weather
 conditions.
  Provide a unique feature that sets Cloudify apart from other weather apps.
-- :white_check_mark: Dynamic User Interface:
+- :white_check_mark: ***Dynamic User Interface***:
  Create a visually appealing and interactive user interface with dynamic
 backgrounds and animations that reflect the weather conditions.
  Ensure the app is visually engaging and easy to navigate.
-- :white_check_mark: User-Friendly Design:
+- :white_check_mark: ***User-Friendly Design***:
  Design an intuitive and simple user interface with a focus on ease of use.
  Include a search feature that allows users to easily find weather information for any
 location.
@@ -46,7 +55,7 @@ location.
 ---
 
 <div style="align-items:center; justify-content: center; gap: 15px;">
+  <img src="assets/Screenshot_2025-03-18-23-24-06-203_com.example.cloudy.jpg" width="300">
   <img src="assets/Screenshot_2025-03-18-23-36-49-202_com.example.cloudy.jpg" width="300">
   <img src="assets/Screenshot_2025-03-18-23-28-44-975_com.example.cloudy.jpg" width="300">
-  <img src="assets/Screenshot_2025-03-18-23-24-06-203_com.example.cloudy.jpg" width="300">
 </div>
