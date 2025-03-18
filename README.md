@@ -1,6 +1,5 @@
 # cloudy
 
-{"a":5,"h":"www.canva.com","c":"DAGiDWwiLxE","i":"x0LFrkuZkVTHfmAuEJ2RSA","b":1742308497046,"j":[{"A":{"K":{},"D":{},"E":{},"S":{},"F":{"A":"Identity.png","B":1},"G":{},"H":{"B":"none","C":"#000000","D":"#ffffff"},"J":{"F":"#000000"},"P":{}}},{}],"A?":"B","A":[{"A":62.70000000000002,"B":98.7011951553925,"D":254.39837266631457,"C":503.19710695558086,"G":"https://www.canva.com/design/DAGiAa8i5Bk/2ig0TwcH0J7t7HIWZLkHbg/edit?utm_content=DAGiAa8i5Bk&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton","A?":"I","a":{"A":true,"B":{"A":{"A":"MAGiAQICad8","B":1},"B":{"A":-113.94565745898038,"B":-25.999466935963824,"D":299.4315823974281,"C":645.8328247787666}}},"d":{"B":"#000000"},"e":[0]}],"B":1200,"C":627}
 
 Cloudify is a modern and user-friendly mobile application designed to provide real-time weather
 information along with practical clothing suggestions based on the current weather conditions.
