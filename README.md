@@ -1,4 +1,4 @@
-# cloudy
+# cloudify
 
 
 Cloudify is a modern and user-friendly mobile application designed to provide real-time weather
