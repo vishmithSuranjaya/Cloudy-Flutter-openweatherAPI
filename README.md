@@ -45,7 +45,7 @@ location.
 
 ---
 
-<div style="display: flex; justify-content: center; gap: 15px;">
+<div style="align-items:center; justify-content: center; gap: 15px;">
   <img src="assets/Screenshot_2025-03-18-23-36-49-202_com.example.cloudy.jpg" width="300">
   <img src="assets/Screenshot_2025-03-18-23-28-44-975_com.example.cloudy.jpg" width="300">
   <img src="assets/Screenshot_2025-03-18-23-24-06-203_com.example.cloudy.jpg" width="300">
