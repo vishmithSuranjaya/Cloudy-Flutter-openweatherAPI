@@ -1,5 +1,6 @@
-# cloudify
+# **cloudify**
 
+![Seagrass](assets/rain_clothes/boots.png)
 
 Cloudify is a modern and user-friendly mobile application designed to provide real-time weather
 information along with practical clothing suggestions based on the current weather conditions.
