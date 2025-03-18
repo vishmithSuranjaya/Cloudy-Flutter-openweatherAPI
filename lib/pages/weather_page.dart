@@ -65,7 +65,7 @@ class _WeatherPageState extends State<WeatherPage> {
       'assets/cloud_clothes/jeans.png',
       'assets/cloud_clothes/boots.png',
       'assets/cloud_clothes/umbrella.png',
-      'assets/cloud_clothes/frock.png'
+      'assets/cloud_clothes/frock.png',
     ];
 
     List<String> rainyClothes = [
@@ -106,7 +106,31 @@ class _WeatherPageState extends State<WeatherPage> {
     }
   }
 
-  // Initialize state
+  // Get background gradient based on weather condition
+  List<Color> getBackgroundGradient(String? mainCondition) {
+    if (mainCondition == null) return [Colors.blue, Colors.lightBlue];
+
+    switch (mainCondition.toLowerCase()) {
+      case 'clouds':
+      case 'mist':
+      case 'smoke':
+      case 'haze':
+      case 'dust':
+      case 'fog':
+        return [Colors.grey, Colors.white];
+      case 'rain':
+      case 'drizzle':
+      case 'shower rain':
+        return [Colors.blueGrey, Colors.lightBlue];
+      case 'thunderstorm':
+        return [Colors.black, Colors.grey];
+      case 'clear':
+        return [Colors.orange, Colors.yellow];
+      default:
+        return [Colors.blue, Colors.lightBlue];
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -115,20 +139,16 @@ class _WeatherPageState extends State<WeatherPage> {
 
   @override
   Widget build(BuildContext context) {
+    final gradientColors = getBackgroundGradient(_weather?.mainCondition);
+
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              //Color(0xff8E5E8A), // Lighter metallic purple
-              Color(0xff87CEEB),
-             // Color(0xff5842A9), // Original metallic purple
-             Color(0xffDDE6F1)
-            ],
+            colors: gradientColors,
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            stops: [0.0, 1.0],
           ),
         ),
         child: Center(
@@ -152,7 +172,7 @@ class _WeatherPageState extends State<WeatherPage> {
               Text(
                 _weather?.mainCondition ?? "Loading",
                 style: const TextStyle(
-                  color: Color.fromARGB(255, 41, 172, 233),
+                  color: Color.fromARGB(255, 197, 197, 197),
                   fontSize: 50,
                   fontWeight: FontWeight.bold,
                 ),
@@ -168,11 +188,36 @@ class _WeatherPageState extends State<WeatherPage> {
                 ),
               ),
 
+              // Additional Weather Details
+              if (_weather != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 20.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      WeatherDetailCard(
+                        icon: Icons.air,
+                        value: "${_weather!.windSpeed} km/h",
+                        label: "Wind",
+                      ),
+                      WeatherDetailCard(
+                        icon: Icons.water_drop,
+                        value: "${_weather!.humidity}%",
+                        label: "Humidity",
+                      ),
+                      WeatherDetailCard(
+                        icon: Icons.speed,
+                        value: "${_weather!.pressure} hPa",
+                        label: "Pressure",
+                      ),
+                    ],
+                  ),
+                ),
+
               // Clothing Suggestions
               if (_weather != null)
                 Padding(
-                  padding:
-                  const EdgeInsets.only(top: 20.0),
+                  padding: const EdgeInsets.only(top: 20.0),
                   child: Column(
                     children: [
                       const Text(
@@ -185,45 +230,68 @@ class _WeatherPageState extends State<WeatherPage> {
                         children: getWeatherClothes(_weather?.mainCondition)
                             .map((imagePath) {
                           return Padding(
-                            padding: const EdgeInsets.only(
-                                top: 10.0), // Add padding on top
+                            padding: const EdgeInsets.only(top: 10.0),
                             child: Image.asset(
                               imagePath,
-                              width: 50, // Set width of the image
-                              height: 50, // Set height of the image
-                              fit: BoxFit.cover, // Maintain aspect ratio
+                              width: 50,
+                              height: 50,
+                              fit: BoxFit.cover,
                             ),
                           );
                         }).toList(),
                       ),
-
-
                       Padding(
-                        padding:
-                            const EdgeInsets.only(top: 20.0), // Add top margin
+                        padding: const EdgeInsets.only(top: 20.0),
                         child: ElevatedButton(
                           child: const Text(
                             'Search more locations..',
-                            style: TextStyle(
-                                fontSize: 18), // Add your desired style here
+                            style: TextStyle(fontSize: 18),
                           ),
-                          
                           onPressed: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const SearchBarWidget()),
+                                builder: (context) => const SearchBarWidget(),
+                              ),
                             );
                           },
                         ),
-                      )
-
-
+                      ),
                     ],
                   ),
                 ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class WeatherDetailCard extends StatelessWidget {
+  final IconData icon;
+  final String value;
+  final String label;
+
+  const WeatherDetailCard({
+    super.key,
+    required this.icon,
+    required this.value,
+    required this.label,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: Colors.white.withOpacity(0.2),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Icon(icon, color: Colors.white),
+            Text(value, style: const TextStyle(color: Colors.white)),
+            Text(label, style: const TextStyle(color: Colors.white)),
+          ],
         ),
       ),
     );
